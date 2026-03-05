@@ -74,9 +74,14 @@ function buildTable(rootEl, items, onChange, rowClassFn){
 
     const initialUnit = hasTiers(it) ? "—" : fmt(it.unitPrice ?? 0);
 
+    const mergedName =
+      (it.group === "ナノニードル" || it.group === "ナノカニューレ")
+        ? `${it.name}${it.spec ? " " + it.spec : ""}`
+        : it.name;
+
     tr.innerHTML = `
-      <td class="name">${it.name}</td>
-      <td class="col-spec">${it.spec ?? ""}</td>
+      <td class="name">${mergedName}</td>
+      <td class="col-spec">${(it.group === "ナノニードル" || it.group === "ナノカニューレ") ? "" : (it.spec ?? "")}</td>
       <td class="right col-tax">${it.taxRate === 0.08 ? "8%" : "10%"}</td>
       <td class="right unit col-num">${initialUnit}</td>
       <td class="right col-qty">
@@ -190,3 +195,4 @@ main().catch(e=>{
   document.body.prepend(el);
   console.error(e);
 });
+
