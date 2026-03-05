@@ -20,6 +20,20 @@ function calcLine(item, qty){
   const inc = (item.rounding === "int") ? Math.trunc(incRaw) : Math.round(incRaw);
   return { q, unit, ex, inc };
 }
+
+// ★GitHub Pages用：products.json を直接読む
+async function loadProducts(){
+  const res = await fetch("./products.json", { cache: "no-store" });
+  if(!res.ok) throw new Error("products.json が読み込めません: " + res.status);
+  return await res.json();
+}
+
+// 規格は「品名に統合」して表示
+function mergedName(it){
+  return `${it.name}${it.spec ? " " + it.spec : ""}`;
+}
+
+// 行の色分け（一般品のJBP範囲だけ）
 function norm(s){ return (s || "").replace(/[ \u3000]/g, "").trim(); }
 
 function makeGeneralRowClassifier(general){
@@ -38,8 +52,8 @@ function makeGeneralRowClassifier(general){
 
     const r = Number(item.row);
     if(r < rs || r > re) return "row-default";
-    if(r === rs) return "row-jbp-orange";
-    return "row-jbp-pink";
+    if(r === rs) return "row-jbp-orange"; // PROだけオレンジ
+    return "row-jbp-pink";                // 以降ピンク
   };
 }
 function makeOtherRowClassifier(){
@@ -71,13 +85,10 @@ function buildTable(rootEl, items, onChange, rowClassFn){
     const tr = document.createElement("tr");
     tr.className = rowClassFn(it);
 
-    // ★規格は品名に統合（全商品）
-    const mergedName = `${it.name}${it.spec ? " " + it.spec : ""}`;
-
     const initialUnit = hasTiers(it) ? "—" : fmt(it.unitPrice ?? 0);
 
     tr.innerHTML = `
-      <td class="name">${mergedName}</td>
+      <td class="name">${mergedName(it)}</td>
       <td class="right unit col-num">${initialUnit}</td>
       <td class="right col-qty">
         <input class="qty" type="number" min="0" step="1" value="" inputmode="numeric" placeholder="">
@@ -110,20 +121,13 @@ function buildTable(rootEl, items, onChange, rowClassFn){
     }
   };
 }
-// ★GitHub Pages用：products.json を直接読む
-async function loadProducts(){
-  const res = await fetch("./products.json", { cache: "no-store" });
-  if(!res.ok) throw new Error("products.json が読み込めません: " + res.status);
-  return await res.json();
-}
 
 async function main(){
-  // ログインUIがあっても使わない
+  // ログインUIが残っていても使わない
   const loginPanel = byId("loginPanel");
   const appPanel   = byId("appPanel");
   if(loginPanel) loginPanel.classList.add("hidden");
   if(appPanel) appPanel.classList.remove("hidden");
-
   const logoutBtn = byId("logoutBtn");
   if(logoutBtn) logoutBtn.style.display = "none";
 
@@ -183,6 +187,77 @@ async function main(){
     byId("sumAllEx").textContent     = fmt(sg.ex + sn.ex + sc.ex);
     byId("sumAllIn").textContent     = fmt(sg.inc + sn.inc + sc.inc);
   }
+
+  // ===== 受注モーダル =====
+  const orderBtn = byId("orderBtn");
+  const orderModal = byId("orderModal");
+  const orderModalClose = byId("orderModalClose");
+  const orderList = byId("orderList");
+  const orderCopy = byId("orderCopy");
+
+  function collectOrders(){
+    const lines = [];
+    function pushFrom(items, tbl){
+      items.forEach((it, i) => {
+        const q = (tbl.getQty(i) || "").trim();
+        if(q === "") return;
+        const n = Number(q);
+        if(!Number.isFinite(n) || n <= 0) return;
+        lines.push({ name: mergedName(it), qty: n });
+      });
+    }
+    pushFrom(general, tblG);
+    pushFrom(needle,  tblN);
+    pushFrom(cannula, tblC);
+    return lines;
+  }
+
+  function openModal(){
+    const lines = collectOrders();
+    orderList.innerHTML = "";
+
+    if(lines.length === 0){
+      orderList.innerHTML = `<div class="order-empty">数量が入力された商品がありません。</div>`;
+    }else{
+      const ul = document.createElement("ul");
+      ul.className = "order-ul";
+      lines.forEach(x => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span class="order-name">${x.name}</span><span class="order-qty">× ${x.qty}</span>`;
+        ul.appendChild(li);
+      });
+      orderList.appendChild(ul);
+    }
+
+    orderModal.classList.remove("hidden");
+  }
+
+  function closeModal(){
+    orderModal.classList.add("hidden");
+  }
+
+  if(orderBtn) orderBtn.addEventListener("click", openModal);
+  if(orderModalClose) orderModalClose.addEventListener("click", closeModal);
+  if(orderModal){
+    orderModal.addEventListener("click", (e) => {
+      if(e.target === orderModal) closeModal();
+    });
+  }
+  if(orderCopy){
+    orderCopy.addEventListener("click", async () => {
+      const lines = collectOrders();
+      const text = lines.length
+        ? lines.map(x => `${x.name}：${x.qty}`).join("\n")
+        : "（受注商品なし）";
+      try{
+        await navigator.clipboard.writeText(text);
+        orderCopy.textContent = "コピーしました";
+        setTimeout(()=> orderCopy.textContent = "コピー", 1200);
+      }catch{
+        // クリップボード不可でも無視
+      }
+    });
+  }
 }
 
 main().catch(e=>{
@@ -193,5 +268,3 @@ main().catch(e=>{
   document.body.prepend(el);
   console.error(e);
 });
-
-
