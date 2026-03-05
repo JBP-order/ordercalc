@@ -1,0 +1,171 @@
+﻿:root{
+  --bg: #f3f6fb;
+  --card: #ffffff;
+  --border: #c9c9c9;
+  --grid: #d9d9d9;
+
+  /* セクション見出し */
+  --head: #ddebf7;
+
+  /* 合計強調 */
+  --total: #fff2cc;
+  --accent: #2f5597;
+
+  /* 製品群 色分け（ここだけ微調整すればOK） */
+  --jbp-orange: #fde9d9;  /* 薄オレンジ */
+  --jbp-red:    #f8cbad;  /* 薄赤（サーモン寄り） */
+  --lnc-blue:   #d9eef7;  /* 薄水色 */
+
+  --text: #111;
+  --muted: #666;
+}
+
+body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;background:var(--bg);color:var(--text)}
+.wrap{max-width:1100px;margin:0 auto;padding:12px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+h1{font-size:18px;margin:0}
+
+.card{
+  background:var(--card);
+  border-radius:12px;
+  border:1px solid var(--border);
+  box-shadow:0 2px 10px rgba(0,0,0,.05);
+  padding:12px;
+  margin-bottom:12px
+}
+
+.row{display:flex;gap:8px;align-items:center}
+input{
+  flex:1;
+  padding:12px;
+  border:1px solid #bfbfbf;
+  border-radius:10px;
+  font-size:18px; /* スマホ前提 */
+}
+button{padding:12px 12px;border:0;border-radius:10px;font-size:14px;cursor:pointer}
+button.ghost{background:transparent;border:1px solid #bfbfbf}
+.hidden{display:none}
+.muted{color:var(--muted);margin-top:4px}
+.err{color:#c00}
+
+/* セクションヘッダー */
+.sectionHead{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px 12px;
+  margin:-12px -12px 10px -12px;
+  background:var(--head);
+  border-bottom:1px solid var(--border);
+  border-top-left-radius:12px;
+  border-top-right-radius:12px;
+}
+.sectionHead h2{font-size:16px;margin:0}
+.hint{font-size:12px;color:var(--muted)}
+
+details.section{padding:0}
+details.section > summary{list-style:none;cursor:pointer}
+details.section > summary::-webkit-details-marker{display:none}
+details.section .sectionBody{padding:0 12px 12px 12px}
+details.section .sectionHead{margin:0}
+
+/* 表（スマホ前提：横スクロール許可） */
+.section.excel{overflow-x:auto}
+table{
+  width:100%;
+  border-collapse:collapse;
+  border:1px solid var(--grid);
+  background:#fff;
+  min-width:720px; /* スマホでも横スクロールで崩れない */
+}
+th,td{
+  border:1px solid var(--grid);
+  padding:10px 8px;
+  font-size:14px;
+  vertical-align:middle;
+}
+th{
+  background:#f2f2f2;
+  color:#333;
+  text-align:left;
+  font-weight:700;
+  white-space:nowrap;
+}
+.right{text-align:right}
+.qty{
+  width:90px;
+  font-size:18px;
+  padding:10px;
+}
+
+/* 製品群 色分け（行の背景） */
+tr.row-jbp-orange td{ background: var(--jbp-orange); }
+tr.row-jbp-red td{    background: var(--jbp-red); }
+tr.row-lnc td{        background: var(--lnc-blue); }
+tr.row-default td{    background: #fff; }
+
+/* 小計 */
+.sum{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:10px;
+  padding-top:8px;
+  border-top:1px dashed #cfcfcf;
+  font-size:15px;
+}
+.sum.big{font-size:20px;font-weight:900}
+
+/* 合計枠強調（sticky） */
+.total{
+  background:var(--total);
+  border:2px solid var(--accent);
+  position:sticky;
+  bottom:10px;
+}
+.total .sectionHead{background:var(--total)}
+.total .sum.big span{color:#000}
+
+/* スマホが狭い時：列を少し減らす（必要なら解除OK） */
+@media (max-width: 520px){
+  .col-spec{display:none}
+  .col-tax{display:none}
+  table{min-width:560px}
+}
+
+/* 数字列の揺れ防止：等幅数字 + 最小幅固定 */
+.col-num{
+  font-variant-numeric: tabular-nums;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  min-width: 92px;
+  white-space: nowrap;
+}
+
+/* 数量入力も揺れないよう幅固定 */
+.col-qty{ min-width: 90px; }
+.qty{ width: 84px; }
+
+/* 0のセルが増えても行高が変わらないように */
+td{ line-height: 1.2; }
+
+/* iOSで入力時のズーム/揺れを抑えるため（既にfont-sizeは大きめだが念押し） */
+input.qty{ font-size: 18px; }
+
+/* 追加：JBPピンク */
+:root{
+  --jbp-pink:   #f7d7e6;  /* 薄ピンク（必要なら調整） */
+}
+
+/* 行の背景 */
+tr.row-jbp-pink td{   background: var(--jbp-pink); }
+
+/* 数値入力のスピナー（タップで増減）を消す */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button{
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number]{
+  -moz-appearance: textfield;
+}

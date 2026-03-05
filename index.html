@@ -1,0 +1,86 @@
+﻿<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>2026年3月版</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="top">
+      <h1>2026年3月版</h1>
+      <button id="logoutBtn" class="ghost">ログアウト</button>
+    </header>
+
+    <section id="loginPanel" class="card hidden">
+      <h2>認証コード</h2>
+      <p class="muted">コードを入力して開始してください。</p>
+      <div class="row">
+        <input id="codeInput" type="password" inputmode="numeric" autocomplete="one-time-code" placeholder="認証コード" />
+        <button id="loginBtn">開始</button>
+      </div>
+      <p id="loginErr" class="err"></p>
+    </section>
+
+    <section id="appPanel" class="hidden">
+
+      <!-- 一般品：常に表示 -->
+      <div class="card section excel">
+        <div class="sectionHead">
+          <h2>一般品</h2>
+        </div>
+        <div id="tblGeneral"></div>
+        <div class="sum">
+          <div>小計（税抜）: <span id="sumGeneralEx">0</span></div>
+          <div>小計（税込）: <span id="sumGeneralIn">0</span></div>
+        </div>
+      </div>
+
+      <!-- ナノニードル：折りたたみ（初期は閉） -->
+      <details class="card section excel collapsed">
+        <summary class="sectionHead">
+          <h2>ナノニードル</h2>
+          <span class="hint">タップで開く</span>
+        </summary>
+        <div class="sectionBody">
+          <div id="tblNeedle"></div>
+          <div class="sum">
+            <div>小計（税抜）: <span id="sumNeedleEx">0</span></div>
+            <div>小計（税込）: <span id="sumNeedleIn">0</span></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- ナノカニューレ：折りたたみ（初期は閉） -->
+      <details class="card section excel collapsed">
+        <summary class="sectionHead">
+          <h2>ナノカニューレ</h2>
+          <span class="hint">タップで開く</span>
+        </summary>
+        <div class="sectionBody">
+          <div id="tblCannula"></div>
+          <div class="sum">
+            <div>小計（税抜）: <span id="sumCannulaEx">0</span></div>
+            <div>小計（税込）: <span id="sumCannulaIn">0</span></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- 合計：強調 -->
+      <div class="card total excel">
+        <div class="sectionHead">
+          <h2>合計</h2>
+        </div>
+        <div class="sum big">
+          <div>税抜合計: <span id="sumAllEx">0</span></div>
+          <div>税込合計: <span id="sumAllIn">0</span></div>
+        </div>
+      </div>
+
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

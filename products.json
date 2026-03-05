@@ -1,0 +1,468 @@
+﻿[
+    {
+        "taxRate":  0.08,
+        "tiers":  [
+                      {
+                          "unitPrice":  6000,
+                          "min":  20,
+                          "max":  null
+                      },
+                      {
+                          "unitPrice":  6500,
+                          "min":  4,
+                          "max":  19
+                      },
+                      {
+                          "unitPrice":  7000,
+                          "min":  1,
+                          "max":  3
+                      }
+                  ],
+        "group":  "一般品",
+        "row":  3,
+        "rounding":  "int",
+        "name":  "JBPポーサインPRO",
+        "spec":  "140cap"
+    },
+    {
+        "row":  3,
+        "group":  "ナノニードル",
+        "name":  "Pro 34G",
+        "spec":  "8mm",
+        "unitPrice":  11000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "row":  4,
+        "group":  "ナノニードル",
+        "name":  "Pro 34G",
+        "spec":  "6mm",
+        "unitPrice":  11000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "row":  5,
+        "group":  "ナノニードル",
+        "name":  "Pro 34G",
+        "spec":  "4mm",
+        "unitPrice":  11000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "unitPrice":  8000,
+        "name":  "JBP ポーサイン100",
+        "row":  6,
+        "taxRate":  0.08,
+        "rounding":  "int",
+        "spec":  "100cap",
+        "group":  "一般品"
+    },
+    {
+        "row":  6,
+        "group":  "ナノニードル",
+        "name":  "Pro U 33G",
+        "spec":  "8mm",
+        "unitPrice":  12000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "unitPrice":  4600,
+        "name":  "JBP プラセンタゼリーピュア",
+        "row":  7,
+        "taxRate":  0.08,
+        "rounding":  "int",
+        "spec":  "30包",
+        "group":  "一般品"
+    },
+    {
+        "row":  7,
+        "group":  "ナノニードル",
+        "name":  "Pro U 33G",
+        "spec":  "6mm",
+        "unitPrice":  12000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "row":  8,
+        "group":  "ナノニードル",
+        "name":  "Pro U 32G",
+        "spec":  "13mm",
+        "unitPrice":  11000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "unitPrice":  9000,
+        "name":  "JBP EQカプセル",
+        "row":  8,
+        "taxRate":  0.08,
+        "rounding":  "int",
+        "spec":  "90cap",
+        "group":  "一般品"
+    },
+    {
+        "row":  9,
+        "group":  "ナノニードル",
+        "name":  "Pro U 32G",
+        "spec":  "8mm",
+        "unitPrice":  11000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "unitPrice":  2100,
+        "name":  "JBP EQカプセル(2シート)",
+        "row":  9,
+        "taxRate":  0.08,
+        "rounding":  "int",
+        "spec":  "20cap",
+        "group":  "一般品"
+    },
+    {
+        "unitPrice":  3000,
+        "name":  "JBP プラセンタEQドリンク",
+        "row":  10,
+        "taxRate":  0.08,
+        "rounding":  "int",
+        "spec":  "10本",
+        "group":  "一般品"
+    },
+    {
+        "row":  10,
+        "group":  "ナノニードル",
+        "name":  "Pro U 32G",
+        "spec":  "4mm",
+        "unitPrice":  11000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "row":  11,
+        "group":  "ナノニードル",
+        "name":  "Pro 32G",
+        "spec":  "13mm",
+        "unitPrice":  9500,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "unitPrice":  3200,
+        "name":  "LNC アイクリーム",
+        "row":  11,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "12g",
+        "group":  "一般品"
+    },
+    {
+        "row":  12,
+        "group":  "ナノニードル",
+        "name":  "Pro 31G",
+        "spec":  "13mm",
+        "unitPrice":  9000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "unitPrice":  2400,
+        "name":  "LNC クレンジングバーム",
+        "row":  12,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "80g",
+        "group":  "一般品"
+    },
+    {
+        "row":  13,
+        "group":  "ナノニードル",
+        "name":  "Pro 30G",
+        "spec":  "13mm",
+        "unitPrice":  8000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "unitPrice":  1600,
+        "name":  "LNC ソープ",
+        "row":  13,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "100g",
+        "group":  "一般品"
+    },
+    {
+        "row":  14,
+        "group":  "ナノニードル",
+        "name":  "Pro 30G",
+        "spec":  "8mm",
+        "unitPrice":  8000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "unitPrice":  2900,
+        "name":  "LNC トーニングローション(普通肌)",
+        "row":  14,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "120ml",
+        "group":  "一般品"
+    },
+    {
+        "row":  15,
+        "group":  "ナノニードル",
+        "name":  "Pro 30G",
+        "spec":  "4mm",
+        "unitPrice":  8000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "unitPrice":  2900,
+        "name":  "LNC モイスチャーローション(乾燥肌)",
+        "row":  15,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "120ml",
+        "group":  "一般品"
+    },
+    {
+        "unitPrice":  5500,
+        "name":  "LNC ディアセラム",
+        "row":  16,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "35ml",
+        "group":  "一般品"
+    },
+    {
+        "unitPrice":  5500,
+        "name":  "LNC リペアリングクリーム",
+        "row":  17,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "35g",
+        "group":  "一般品"
+    },
+    {
+        "unitPrice":  2100,
+        "name":  "LNC UVプロテクター",
+        "row":  18,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "40ml",
+        "group":  "一般品"
+    },
+    {
+        "unitPrice":  4200,
+        "name":  "LNC ナイトリフティングマスク",
+        "row":  19,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "50g",
+        "group":  "一般品"
+    },
+    {
+        "row":  20,
+        "group":  "ナノカニューレ",
+        "name":  "30G",
+        "spec":  "25mm",
+        "unitPrice":  10000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "unitPrice":  6000,
+        "name":  "Placenta Solution MD",
+        "row":  20,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "30ml",
+        "group":  "一般品"
+    },
+    {
+        "unitPrice":  1000,
+        "name":  "アネラ マナソープMD5",
+        "row":  21,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "100g",
+        "group":  "一般品"
+    },
+    {
+        "row":  21,
+        "group":  "ナノカニューレ",
+        "name":  "27G",
+        "spec":  "50mm",
+        "unitPrice":  10000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "unitPrice":  1250,
+        "name":  "アネラ マナソープMD10",
+        "row":  22,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "100g",
+        "group":  "一般品"
+    },
+    {
+        "row":  22,
+        "group":  "ナノカニューレ",
+        "name":  "27G",
+        "spec":  "40mm",
+        "unitPrice":  10000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "unitPrice":  2400,
+        "name":  "ピロプラ モイスチャークリーム",
+        "row":  23,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "100ml",
+        "group":  "一般品"
+    },
+    {
+        "row":  23,
+        "group":  "ナノカニューレ",
+        "name":  "25G",
+        "spec":  "70mm",
+        "unitPrice":  10000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "row":  24,
+        "group":  "ナノカニューレ",
+        "name":  "25G",
+        "spec":  "50mm",
+        "unitPrice":  10000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "unitPrice":  1980,
+        "name":  "ピロプラ カーミングクリーム",
+        "row":  24,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "35ml",
+        "group":  "一般品"
+    },
+    {
+        "row":  25,
+        "group":  "ナノカニューレ",
+        "name":  "23G",
+        "spec":  "50mm",
+        "unitPrice":  10000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "unitPrice":  2280,
+        "name":  "ヌメロトワ JBPナイトセラム",
+        "row":  25,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "6本",
+        "group":  "一般品"
+    },
+    {
+        "row":  26,
+        "group":  "ナノカニューレ",
+        "name":  "21G",
+        "spec":  "70mm",
+        "unitPrice":  10000,
+        "taxRate":  0.1,
+        "rounding":  "int"
+    },
+    {
+        "unitPrice":  2090,
+        "name":  "ヌメロトワ JBPナイトセラム 50包～",
+        "row":  26,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "6本",
+        "group":  "一般品"
+    },
+    {
+        "unitPrice":  2400,
+        "name":  "フェムウォッシュMD",
+        "row":  27,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "100ml",
+        "group":  "一般品"
+    },
+    {
+        "unitPrice":  3000,
+        "name":  "フェムジェルMD",
+        "row":  28,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "50ml",
+        "group":  "一般品"
+    },
+    {
+        "unitPrice":  1800,
+        "name":  "CSジェル ～Oral Care～",
+        "row":  29,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "40g",
+        "group":  "一般品"
+    },
+    {
+        "unitPrice":  3280,
+        "name":  "プラセンタル リップグロス",
+        "row":  30,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "4ml",
+        "group":  "一般品"
+    },
+    {
+        "unitPrice":  2470,
+        "name":  "JBPPET プラセンタサプリリキッド",
+        "row":  31,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "15包",
+        "group":  "一般品"
+    },
+    {
+        "unitPrice":  2860,
+        "name":  "JBPPET プラセンタサプリEQパウダー",
+        "row":  32,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "30粒",
+        "group":  "一般品"
+    },
+    {
+        "unitPrice":  2600,
+        "name":  "JBPPET プラセンタサプリペースト",
+        "row":  33,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "15包",
+        "group":  "一般品"
+    },
+    {
+        "unitPrice":  2600,
+        "name":  "JBPPET プラセンタサプリキューブ",
+        "row":  34,
+        "taxRate":  0.1,
+        "rounding":  "int",
+        "spec":  "50g",
+        "group":  "一般品"
+    }
+]
