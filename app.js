@@ -107,7 +107,7 @@ function buildTable(rootEl, items, onChange, rowClassFn){
   };
 }
 
-// ★ここがポイント：GitHub Pagesでは /api ではなく products.json を読む
+// ★GitHub Pages用：products.json を直接読む
 async function loadProducts(){
   const res = await fetch("./products.json", { cache: "no-store" });
   if(!res.ok) throw new Error("products.json が読み込めません: " + res.status);
@@ -115,13 +115,12 @@ async function loadProducts(){
 }
 
 async function main(){
-  // ログインUIは使わない（あっても隠す）
+  // ログインUIがあっても使わない
   const loginPanel = byId("loginPanel");
   const appPanel   = byId("appPanel");
   if(loginPanel) loginPanel.classList.add("hidden");
   if(appPanel) appPanel.classList.remove("hidden");
 
-  // ログアウトボタンも不要なので隠す
   const logoutBtn = byId("logoutBtn");
   if(logoutBtn) logoutBtn.style.display = "none";
 
@@ -184,7 +183,6 @@ async function main(){
 }
 
 main().catch(e=>{
-  // 画面にエラーが出るようにする（スマホでデバッグしやすい）
   const el = document.createElement("div");
   el.style.padding = "12px";
   el.style.color = "red";
