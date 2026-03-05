@@ -21,19 +21,18 @@ function calcLine(item, qty){
   return { q, unit, ex, inc };
 }
 
-// ★GitHub Pages用：products.json を直接読む
 async function loadProducts(){
   const res = await fetch("./products.json", { cache: "no-store" });
   if(!res.ok) throw new Error("products.json が読み込めません: " + res.status);
   return await res.json();
 }
 
-// 規格は「品名に統合」して表示
+// 規格を品名に統合（全商品）
 function mergedName(it){
   return `${it.name}${it.spec ? " " + it.spec : ""}`;
 }
 
-// 行の色分け（一般品のJBP範囲だけ）
+// 色分け（一般品のJBP範囲だけ）
 function norm(s){ return (s || "").replace(/[ \u3000]/g, "").trim(); }
 
 function makeGeneralRowClassifier(general){
@@ -52,8 +51,8 @@ function makeGeneralRowClassifier(general){
 
     const r = Number(item.row);
     if(r < rs || r > re) return "row-default";
-    if(r === rs) return "row-jbp-orange"; // PROだけオレンジ
-    return "row-jbp-pink";                // 以降ピンク
+    if(r === rs) return "row-jbp-orange";
+    return "row-jbp-pink";
   };
 }
 function makeOtherRowClassifier(){
@@ -71,10 +70,10 @@ function buildTable(rootEl, items, onChange, rowClassFn){
     <thead>
       <tr>
         <th>品名</th>
-        <th class="right col-num">単価</th>
+        <th class="right col-unit">単価</th>
         <th class="right col-qty">数量</th>
-        <th class="right col-num">税抜</th>
-        <th class="right col-num">税込</th>
+        <th class="right col-ex">税抜</th>
+        <th class="right col-inc">税込</th>
       </tr>
     </thead>
     <tbody></tbody>
@@ -89,12 +88,12 @@ function buildTable(rootEl, items, onChange, rowClassFn){
 
     tr.innerHTML = `
       <td class="name">${mergedName(it)}</td>
-      <td class="right unit col-num">${initialUnit}</td>
+      <td class="right unit col-unit">${initialUnit}</td>
       <td class="right col-qty">
         <input class="qty" type="number" min="0" step="1" value="" inputmode="numeric" placeholder="">
       </td>
-      <td class="right ex col-num">0</td>
-      <td class="right inc col-num">0</td>
+      <td class="right ex col-ex">0</td>
+      <td class="right inc col-inc">0</td>
     `;
 
     const qty = tr.querySelector("input");
@@ -123,14 +122,6 @@ function buildTable(rootEl, items, onChange, rowClassFn){
 }
 
 async function main(){
-  // ログインUIが残っていても使わない
-  const loginPanel = byId("loginPanel");
-  const appPanel   = byId("appPanel");
-  if(loginPanel) loginPanel.classList.add("hidden");
-  if(appPanel) appPanel.classList.remove("hidden");
-  const logoutBtn = byId("logoutBtn");
-  if(logoutBtn) logoutBtn.style.display = "none";
-
   const all = await loadProducts();
   const general = all.filter(x => x.group === "一般品");
   const needle  = all.filter(x => x.group === "ナノニードル");
@@ -163,8 +154,8 @@ async function main(){
     recalc();
   }, otherRowClass);
 
-  function sumTable(tableDivId){
-    const rows = byId(tableDivId).querySelectorAll("tbody tr");
+  function sumTable(divId){
+    const rows = byId(divId).querySelectorAll("tbody tr");
     let ex=0, inc=0;
     rows.forEach(r=>{
       ex  += Number(r.querySelector(".ex").textContent.replace(/,/g,"") || 0);
@@ -178,14 +169,12 @@ async function main(){
     const sn = sumTable("tblNeedle");
     const sc = sumTable("tblCannula");
 
-    byId("sumGeneralEx").textContent = fmt(sg.ex);
     byId("sumGeneralIn").textContent = fmt(sg.inc);
-    byId("sumNeedleEx").textContent  = fmt(sn.ex);
     byId("sumNeedleIn").textContent  = fmt(sn.inc);
-    byId("sumCannulaEx").textContent = fmt(sc.ex);
     byId("sumCannulaIn").textContent = fmt(sc.inc);
-    byId("sumAllEx").textContent     = fmt(sg.ex + sn.ex + sc.ex);
-    byId("sumAllIn").textContent     = fmt(sg.inc + sn.inc + sc.inc);
+
+    byId("sumAllEx").textContent = fmt(sg.ex + sn.ex + sc.ex);
+    byId("sumAllIn").textContent = fmt(sg.inc + sn.inc + sc.inc);
   }
 
   // ===== 受注モーダル =====
@@ -228,7 +217,6 @@ async function main(){
       });
       orderList.appendChild(ul);
     }
-
     orderModal.classList.remove("hidden");
   }
 
