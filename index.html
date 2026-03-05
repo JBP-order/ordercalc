@@ -1,86 +1,77 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>2026年3月版</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <div class="wrap">
-    <header class="top">
-      <h1>2026年3月版</h1>
-      <button id="logoutBtn" class="ghost">ログアウト</button>
-    </header>
+  <header class="topbar">
+    <div class="title">2026年3月版</div>
+    <button id="orderBtn" class="order-btn" type="button">受注</button>
+  </header>
 
-    <section id="loginPanel" class="card hidden">
-      <h2>認証コード</h2>
-      <p class="muted">コードを入力して開始してください。</p>
-      <div class="row">
-        <input id="codeInput" type="password" inputmode="numeric" autocomplete="one-time-code" placeholder="認証コード" />
-        <button id="loginBtn">開始</button>
+  <main id="appPanel" class="app">
+
+    <section class="sum-card">
+      <div class="sum-row">
+        <div class="sum-label">一般品 合計（税抜/税込）</div>
+        <div class="sum-val"><span id="sumGeneralEx">0</span> / <span id="sumGeneralIn">0</span></div>
       </div>
-      <p id="loginErr" class="err"></p>
+      <div class="sum-row">
+        <div class="sum-label">ナノニードル 合計（税抜/税込）</div>
+        <div class="sum-val"><span id="sumNeedleEx">0</span> / <span id="sumNeedleIn">0</span></div>
+      </div>
+      <div class="sum-row">
+        <div class="sum-label">ナノカニューレ 合計（税抜/税込）</div>
+        <div class="sum-val"><span id="sumCannulaEx">0</span> / <span id="sumCannulaIn">0</span></div>
+      </div>
+
+      <div class="sum-row sum-all">
+        <div class="sum-label">合計（税抜/税込）</div>
+        <div class="sum-val"><span id="sumAllEx">0</span> / <span id="sumAllIn">0</span></div>
+      </div>
     </section>
 
-    <section id="appPanel" class="hidden">
-
-      <!-- 一般品：常に表示 -->
-      <div class="card section excel">
-        <div class="sectionHead">
-          <h2>一般品</h2>
-        </div>
-        <div id="tblGeneral"></div>
-        <div class="sum">
-          <div>小計（税抜）: <span id="sumGeneralEx">0</span></div>
-          <div>小計（税込）: <span id="sumGeneralIn">0</span></div>
-        </div>
-      </div>
-
-      <!-- ナノニードル：折りたたみ（初期は閉） -->
-      <details class="card section excel collapsed">
-        <summary class="sectionHead">
-          <h2>ナノニードル</h2>
-          <span class="hint">タップで開く</span>
-        </summary>
-        <div class="sectionBody">
-          <div id="tblNeedle"></div>
-          <div class="sum">
-            <div>小計（税抜）: <span id="sumNeedleEx">0</span></div>
-            <div>小計（税込）: <span id="sumNeedleIn">0</span></div>
-          </div>
-        </div>
-      </details>
-
-      <!-- ナノカニューレ：折りたたみ（初期は閉） -->
-      <details class="card section excel collapsed">
-        <summary class="sectionHead">
-          <h2>ナノカニューレ</h2>
-          <span class="hint">タップで開く</span>
-        </summary>
-        <div class="sectionBody">
-          <div id="tblCannula"></div>
-          <div class="sum">
-            <div>小計（税抜）: <span id="sumCannulaEx">0</span></div>
-            <div>小計（税込）: <span id="sumCannulaIn">0</span></div>
-          </div>
-        </div>
-      </details>
-
-      <!-- 合計：強調 -->
-      <div class="card total excel">
-        <div class="sectionHead">
-          <h2>合計</h2>
-        </div>
-        <div class="sum big">
-          <div>税抜合計: <span id="sumAllEx">0</span></div>
-          <div>税込合計: <span id="sumAllIn">0</span></div>
-        </div>
-      </div>
-
+    <section class="group">
+      <h2>一般品</h2>
+      <div id="tblGeneral"></div>
     </section>
+
+    <section class="group details-open">
+      <details open>
+        <summary>ナノニードル</summary>
+        <div id="tblNeedle"></div>
+      </details>
+    </section>
+
+    <section class="group details-open">
+      <details open>
+        <summary>ナノカニューレ</summary>
+        <div id="tblCannula"></div>
+      </details>
+    </section>
+
+  </main>
+
+  <!-- 受注モーダル -->
+  <div id="orderModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div class="modal-title">今回の受注</div>
+        <button id="orderModalClose" class="modal-close" type="button">×</button>
+      </div>
+
+      <div id="orderList" class="modal-body"></div>
+
+      <div class="modal-foot">
+        <button id="orderCopy" class="modal-copy" type="button">コピー</button>
+        <button class="modal-ok" type="button" onclick="document.getElementById('orderModal').classList.add('hidden')">閉じる</button>
+      </div>
+    </div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="./app.js"></script>
 </body>
 </html>
