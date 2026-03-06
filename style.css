@@ -1,5 +1,3 @@
-/* 既存の固定ウィンドウ（合計バー）を壊さないため、全体は極力触らず最小限 */
-
 *{ box-sizing:border-box; }
 body{
   margin:0;
@@ -10,7 +8,42 @@ body{
 .right{ text-align:right; }
 .hidden{ display:none !important; }
 
-/* テーブル：列順 品名→数量→単価→税込 */
+/* 上部 */
+.topbar{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background:#fff;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+.title{ font-weight: 900; font-size: 16px; }
+
+/* 本体 */
+.app{
+  padding: 10px 10px 12px;
+  max-width: 980px;
+  margin: 0 auto;
+}
+.group{
+  background:#fff;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,.04);
+  padding: 10px 10px 12px;
+  margin-bottom: 12px;
+}
+.group h2{ margin: 4px 4px 10px; font-size: 15px; }
+details summary{
+  cursor: pointer;
+  font-weight: 900;
+  padding: 4px 4px 10px;
+}
+
+/* テーブル（横スクロール前提にしない） */
 .items-table{
   width: 100%;
   border-collapse: collapse;
@@ -31,9 +64,10 @@ body{
   word-break: break-word;
   font-size: 13px;
 }
-.items-table .col-qty{ width: 78px; }
-.items-table .col-unit{ width: 86px; white-space: nowrap; }
-.items-table .col-inc{ width: 90px; white-space: nowrap; }
+.items-table .col-unit{ width: 78px; white-space: nowrap; }
+.items-table .col-qty{ width: 76px; }
+.items-table .col-ex{ width: 78px; white-space: nowrap; }
+.items-table .col-inc{ width: 82px; white-space: nowrap; }
 
 .items-table input.qty{
   width: 64px;
@@ -50,10 +84,117 @@ body{
 .row-jbp-pink td{ background: #ffd6e7; }   /* 以降（ピンク） */
 .row-lnc td{ background: #d9f0ff; }        /* LNC（水色） */
 
+/* 下部固定バー */
+.bottom-bar{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #fff;
+  border-top: 1px solid rgba(0,0,0,.10);
+}
+.bottom-sums{
+  min-width: 0;
+}
+.sumline{
+  display:flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.sumline .lbl{ font-weight: 900; font-size: 13px; }
+.sumline .val{ font-weight: 900; font-size: 15px; white-space: nowrap; }
+.subline{
+  margin-top: 2px;
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 11px;
+  color:#444;
+}
+.order-btn{
+  flex: 0 0 auto;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.15);
+  background: #fff;
+  font-weight: 900;
+}
+.bottom-spacer{ height: 76px; }
+
+/* モーダル */
+.modal{
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+}
+.modal-card{
+  width: min(680px, 100%);
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  overflow: hidden;
+}
+.modal-head{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+.modal-title{ font-weight: 900; }
+.modal-close{
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+.modal-body{
+  padding: 12px 14px;
+  max-height: 60vh;
+  overflow: auto;
+}
+.order-empty{ color:#666; padding: 8px 0; }
+.order-ul{ list-style: none; padding: 0; margin: 0; }
+.order-ul li{
+  display:flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px dashed rgba(0,0,0,.15);
+}
+.order-name{ flex: 1; word-break: break-word; }
+.order-qty{ white-space: nowrap; font-weight: 900; }
+.modal-foot{
+  display:flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 14px;
+  border-top: 1px solid rgba(0,0,0,.08);
+}
+.modal-copy, .modal-ok{
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,.15);
+  background: #fff;
+  font-weight: 900;
+}
+
+/* スマホ最適化：横スクロールを消すため「単価」「税抜」を消す */
 @media (max-width: 520px){
   .items-table th, .items-table td{ padding: 6px 4px; }
-  .items-table .col-qty{ width: 74px; }
-  .items-table .col-unit{ width: 82px; }
-  .items-table .col-inc{ width: 86px; }
+  .items-table .col-unit, .items-table .col-ex{ display:none; }
   .items-table input.qty{ width: 60px; max-width: 60px; }
+  .bottom-spacer{ height: 88px; }
 }
