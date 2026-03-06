@@ -1,3 +1,4 @@
+// ===== util =====
 const fmt = (n) => (Math.trunc(n)).toLocaleString("ja-JP");
 const byId = (id) => document.getElementById(id);
 
@@ -12,27 +13,24 @@ function pickUnitPrice(item, qty){
   }
   return item.unitPrice ?? 0;
 }
-function calcLine(item, qty){
-  const q = (qty === "" || qty == null) ? 0 : Number(qty);
+function calcLine(item, qtyStr){
+  const q = (qtyStr === "" || qtyStr == null) ? 0 : Number(qtyStr);
   const unit = pickUnitPrice(item, q);
   const ex = unit * q;
   const incRaw = ex * (1 + (item.taxRate ?? 0.10));
   const inc = (item.rounding === "int") ? Math.trunc(incRaw) : Math.round(incRaw);
   return { q, unit, ex, inc };
 }
-
 async function loadProducts(){
   const res = await fetch("./products.json", { cache: "no-store" });
   if(!res.ok) throw new Error("products.json が読み込めません: " + res.status);
   return await res.json();
 }
-
-// 規格を品名に統合（全商品）
 function mergedName(it){
   return `${it.name}${it.spec ? " " + it.spec : ""}`;
 }
 
-// 色分け（一般品のJBP範囲だけ）
+// ===== color classifier (existing behavior kept) =====
 function norm(s){ return (s || "").replace(/[ \u3000]/g, "").trim(); }
 
 function makeGeneralRowClassifier(general){
@@ -63,21 +61,26 @@ function makeOtherRowClassifier(){
   };
 }
 
+// ===== table =====
+// ※今のデザインを壊さないため、テーブルはJS側で「単価列」を追加するだけにします。
+// 期待する列順：品名 / 数量 / 単価 / 税抜 / 税込（※既存が違っても、ここで描画される表が基準になります）
 function buildTable(rootEl, items, onChange, rowClassFn){
   const table = document.createElement("table");
   table.className = "items-table";
+
   table.innerHTML = `
     <thead>
       <tr>
         <th>品名</th>
-        <th class="right col-unit">単価</th>
         <th class="right col-qty">数量</th>
+        <th class="right col-unit">単価</th>
         <th class="right col-ex">税抜</th>
         <th class="right col-inc">税込</th>
       </tr>
     </thead>
     <tbody></tbody>
   `;
+
   const tbody = table.querySelector("tbody");
 
   items.forEach((it, idx) => {
@@ -88,15 +91,15 @@ function buildTable(rootEl, items, onChange, rowClassFn){
 
     tr.innerHTML = `
       <td class="name">${mergedName(it)}</td>
-      <td class="right unit col-unit">${initialUnit}</td>
       <td class="right col-qty">
         <input class="qty" type="number" min="0" step="1" value="" inputmode="numeric" placeholder="">
       </td>
+      <td class="right unit col-unit">${initialUnit}</td>
       <td class="right ex col-ex">0</td>
       <td class="right inc col-inc">0</td>
     `;
 
-    const qty = tr.querySelector("input");
+    const qty = tr.querySelector("input.qty");
     qty.addEventListener("input", () => onChange(idx, qty.value));
     tbody.appendChild(tr);
   });
@@ -105,18 +108,26 @@ function buildTable(rootEl, items, onChange, rowClassFn){
   rootEl.appendChild(table);
 
   return {
-    updateRow(idx, ex, inc){
-      const tr = tbody.children[idx];
-      tr.querySelector(".ex").textContent = fmt(ex);
-      tr.querySelector(".inc").textContent = fmt(inc);
-    },
     setUnit(idx, txt){
       const tr = tbody.children[idx];
       tr.querySelector(".unit").textContent = txt;
     },
+    updateRow(idx, ex, inc){
+      const tr = tbody.children[idx];
+      tr.querySelector(".ex").textContent  = fmt(ex);
+      tr.querySelector(".inc").textContent = fmt(inc);
+    },
     getQty(idx){
       const tr = tbody.children[idx];
       return tr.querySelector(".qty").value;
+    },
+    sum(){
+      let ex=0, inc=0;
+      tbody.querySelectorAll("tr").forEach(tr=>{
+        ex  += Number(tr.querySelector(".ex").textContent.replace(/,/g,"") || 0);
+        inc += Number(tr.querySelector(".inc").textContent.replace(/,/g,"") || 0);
+      });
+      return {ex, inc};
     }
   };
 }
@@ -154,105 +165,30 @@ async function main(){
     recalc();
   }, otherRowClass);
 
-  function sumTable(divId){
-    const rows = byId(divId).querySelectorAll("tbody tr");
-    let ex=0, inc=0;
-    rows.forEach(r=>{
-      ex  += Number(r.querySelector(".ex").textContent.replace(/,/g,"") || 0);
-      inc += Number(r.querySelector(".inc").textContent.replace(/,/g,"") || 0);
-    });
-    return {ex, inc};
+  function setTextIfExists(id, value){
+    const el = byId(id);
+    if(el) el.textContent = fmt(value);
   }
 
   function recalc(){
-    const sg = sumTable("tblGeneral");
-    const sn = sumTable("tblNeedle");
-    const sc = sumTable("tblCannula");
+    const sg = tblG.sum();
+    const sn = tblN.sum();
+    const sc = tblC.sum();
 
-    byId("sumGeneralIn").textContent = fmt(sg.inc);
-    byId("sumNeedleIn").textContent  = fmt(sn.inc);
-    byId("sumCannulaIn").textContent = fmt(sc.inc);
+    setTextIfExists("sumGeneralEx", sg.ex);
+    setTextIfExists("sumGeneralIn", sg.inc);
 
-    byId("sumAllEx").textContent = fmt(sg.ex + sn.ex + sc.ex);
-    byId("sumAllIn").textContent = fmt(sg.inc + sn.inc + sc.inc);
-  }
+    setTextIfExists("sumNeedleEx",  sn.ex);
+    setTextIfExists("sumNeedleIn",  sn.inc);
 
-  // ===== 受注モーダル =====
-  const orderBtn = byId("orderBtn");
-  const orderModal = byId("orderModal");
-  const orderModalClose = byId("orderModalClose");
-  const orderList = byId("orderList");
-  const orderCopy = byId("orderCopy");
+    setTextIfExists("sumCannulaEx", sc.ex);
+    setTextIfExists("sumCannulaIn", sc.inc);
 
-  function collectOrders(){
-    const lines = [];
-    function pushFrom(items, tbl){
-      items.forEach((it, i) => {
-        const q = (tbl.getQty(i) || "").trim();
-        if(q === "") return;
-        const n = Number(q);
-        if(!Number.isFinite(n) || n <= 0) return;
-        lines.push({ name: mergedName(it), qty: n });
-      });
-    }
-    pushFrom(general, tblG);
-    pushFrom(needle,  tblN);
-    pushFrom(cannula, tblC);
-    return lines;
-  }
-
-  function openModal(){
-    const lines = collectOrders();
-    orderList.innerHTML = "";
-
-    if(lines.length === 0){
-      orderList.innerHTML = `<div class="order-empty">数量が入力された商品がありません。</div>`;
-    }else{
-      const ul = document.createElement("ul");
-      ul.className = "order-ul";
-      lines.forEach(x => {
-        const li = document.createElement("li");
-        li.innerHTML = `<span class="order-name">${x.name}</span><span class="order-qty">× ${x.qty}</span>`;
-        ul.appendChild(li);
-      });
-      orderList.appendChild(ul);
-    }
-    orderModal.classList.remove("hidden");
-  }
-
-  function closeModal(){
-    orderModal.classList.add("hidden");
-  }
-
-  if(orderBtn) orderBtn.addEventListener("click", openModal);
-  if(orderModalClose) orderModalClose.addEventListener("click", closeModal);
-  if(orderModal){
-    orderModal.addEventListener("click", (e) => {
-      if(e.target === orderModal) closeModal();
-    });
-  }
-  if(orderCopy){
-    orderCopy.addEventListener("click", async () => {
-      const lines = collectOrders();
-      const text = lines.length
-        ? lines.map(x => `${x.name}：${x.qty}`).join("\n")
-        : "（受注商品なし）";
-      try{
-        await navigator.clipboard.writeText(text);
-        orderCopy.textContent = "コピーしました";
-        setTimeout(()=> orderCopy.textContent = "コピー", 1200);
-      }catch{
-        // クリップボード不可でも無視
-      }
-    });
+    setTextIfExists("sumAllEx", sg.ex + sn.ex + sc.ex);
+    setTextIfExists("sumAllIn", sg.inc + sn.inc + sc.inc);
   }
 }
 
 main().catch(e=>{
-  const el = document.createElement("div");
-  el.style.padding = "12px";
-  el.style.color = "red";
-  el.textContent = "エラー: " + (e?.message || e);
-  document.body.prepend(el);
   console.error(e);
 });
