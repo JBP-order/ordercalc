@@ -9,9 +9,11 @@
 <body>
   <header class="topbar">
     <div class="title">2026年3月版</div>
+    <!-- 受注ボタンは残っていてOK（表示されても害なし） -->
+    <button id="orderBtn" class="order-btn" type="button">受注</button>
   </header>
 
-  <main id="appPanel" class="app">
+  <main class="app">
     <section class="group">
       <h2>一般品</h2>
       <div id="tblGeneral"></div>
@@ -31,40 +33,25 @@
       </details>
     </section>
 
-    <!-- 下部固定バーに隠れないよう余白 -->
+    <!-- 固定バーに被らないよう余白 -->
     <div class="bottom-spacer"></div>
   </main>
 
-  <!-- 下部固定：合計＆受注ボタン -->
+  <!-- ★下部固定バー（税抜/税込） -->
   <div class="bottom-bar">
-    <div class="bottom-sums">
-      <div class="sumline">
-        <div class="lbl">合計（税抜/税込）</div>
-        <div class="val"><span id="sumAllEx">0</span> / <span id="sumAllIn">0</span></div>
+    <div class="bottom-left">
+      <div class="bottom-title">合計</div>
+      <div class="bottom-sum">
+        <span class="label">税抜</span>
+        <span id="sumAllEx" class="money">0</span>
+        <span class="sep">/</span>
+        <span class="label">税込</span>
+        <span id="sumAllIn" class="money">0</span>
       </div>
-      <div class="subline">
+      <div class="bottom-mini">
         <span>一般品: <span id="sumGeneralIn">0</span></span>
         <span>ニードル: <span id="sumNeedleIn">0</span></span>
         <span>カニューレ: <span id="sumCannulaIn">0</span></span>
-      </div>
-    </div>
-
-    <button id="orderBtn" class="order-btn" type="button">受注</button>
-  </div>
-
-  <!-- 受注モーダル -->
-  <div id="orderModal" class="modal hidden" role="dialog" aria-modal="true">
-    <div class="modal-card">
-      <div class="modal-head">
-        <div class="modal-title">今回の受注</div>
-        <button id="orderModalClose" class="modal-close" type="button">×</button>
-      </div>
-
-      <div id="orderList" class="modal-body"></div>
-
-      <div class="modal-foot">
-        <button id="orderCopy" class="modal-copy" type="button">コピー</button>
-        <button class="modal-ok" type="button" onclick="document.getElementById('orderModal').classList.add('hidden')">閉じる</button>
       </div>
     </div>
   </div>
