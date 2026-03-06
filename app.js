@@ -27,10 +27,11 @@ async function loadProducts(){
   return await res.json();
 }
 function mergedName(it){
+  // 規格は品名に統合
   return `${it.name}${it.spec ? " " + it.spec : ""}`;
 }
 
-// ===== color classifier (existing behavior kept) =====
+// ===== color classifier =====
 function norm(s){ return (s || "").replace(/[ \u3000]/g, "").trim(); }
 
 function makeGeneralRowClassifier(general){
@@ -49,8 +50,8 @@ function makeGeneralRowClassifier(general){
 
     const r = Number(item.row);
     if(r < rs || r > re) return "row-default";
-    if(r === rs) return "row-jbp-orange";
-    return "row-jbp-pink";
+    if(r === rs) return "row-jbp-orange"; // PRO
+    return "row-jbp-pink";                // 以降
   };
 }
 function makeOtherRowClassifier(){
@@ -62,8 +63,7 @@ function makeOtherRowClassifier(){
 }
 
 // ===== table =====
-// ※今のデザインを壊さないため、テーブルはJS側で「単価列」を追加するだけにします。
-// 期待する列順：品名 / 数量 / 単価 / 税抜 / 税込（※既存が違っても、ここで描画される表が基準になります）
+// ここで「単価列」を追加（今のindex/styleに依存しない）
 function buildTable(rootEl, items, onChange, rowClassFn){
   const table = document.createElement("table");
   table.className = "items-table";
@@ -133,6 +133,12 @@ function buildTable(rootEl, items, onChange, rowClassFn){
 }
 
 async function main(){
+  // ログインUIが残っていても使わない（表示が残っていても無害）
+  const loginPanel = byId("loginPanel");
+  const appPanel   = byId("appPanel");
+  if(loginPanel) loginPanel.classList.add("hidden");
+  if(appPanel) appPanel.classList.remove("hidden");
+
   const all = await loadProducts();
   const general = all.filter(x => x.group === "一般品");
   const needle  = all.filter(x => x.group === "ナノニードル");
@@ -186,6 +192,79 @@ async function main(){
 
     setTextIfExists("sumAllEx", sg.ex + sn.ex + sc.ex);
     setTextIfExists("sumAllIn", sg.inc + sn.inc + sc.inc);
+  }
+
+  // ===== 受注モーダル（復活） =====
+  const orderBtn = byId("orderBtn");
+  const orderModal = byId("orderModal");
+  const orderModalClose = byId("orderModalClose");
+  const orderList = byId("orderList");
+  const orderCopy = byId("orderCopy");
+
+  function collectOrders(){
+    const lines = [];
+    function pushFrom(items, tbl){
+      items.forEach((it, i) => {
+        const q = (tbl.getQty(i) || "").trim();
+        if(q === "") return;
+        const n = Number(q);
+        if(!Number.isFinite(n) || n <= 0) return;
+        lines.push({ name: mergedName(it), qty: n });
+      });
+    }
+    pushFrom(general, tblG);
+    pushFrom(needle,  tblN);
+    pushFrom(cannula, tblC);
+    return lines;
+  }
+
+  function openModal(){
+    if(!orderModal || !orderList) return;
+
+    const lines = collectOrders();
+    orderList.innerHTML = "";
+
+    if(lines.length === 0){
+      orderList.innerHTML = `<div class="order-empty">数量が入力された商品がありません。</div>`;
+    }else{
+      const ul = document.createElement("ul");
+      ul.className = "order-ul";
+      lines.forEach(x => {
+        const li = document.createElement("li");
+        li.innerHTML = `<span class="order-name">${x.name}</span><span class="order-qty">× ${x.qty}</span>`;
+        ul.appendChild(li);
+      });
+      orderList.appendChild(ul);
+    }
+
+    orderModal.classList.remove("hidden");
+  }
+
+  function closeModal(){
+    if(orderModal) orderModal.classList.add("hidden");
+  }
+
+  if(orderBtn) orderBtn.addEventListener("click", openModal);
+  if(orderModalClose) orderModalClose.addEventListener("click", closeModal);
+  if(orderModal){
+    orderModal.addEventListener("click", (e) => {
+      if(e.target === orderModal) closeModal();
+    });
+  }
+  if(orderCopy){
+    orderCopy.addEventListener("click", async () => {
+      const lines = collectOrders();
+      const text = lines.length
+        ? lines.map(x => `${x.name}：${x.qty}`).join("\n")
+        : "（受注商品なし）";
+      try{
+        await navigator.clipboard.writeText(text);
+        orderCopy.textContent = "コピーしました";
+        setTimeout(()=> orderCopy.textContent = "コピー", 1200);
+      }catch{
+        // クリップボード不可でもOK
+      }
+    });
   }
 }
 
